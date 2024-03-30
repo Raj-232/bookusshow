@@ -47,7 +47,6 @@ const NavBar = () => {
                     <Button className="space-x-2" variant="outline"><IconBxsUser className="sm:hidden" /><div className="hidden sm:flex">Sign In</div></Button>
                 </div>
             </div>
-
             <div className="flex space-x-4 md:hidden justify-center  overflow-x-scroll custom-scrollbar">
                 {routes.map((item, index) => (
                     <div key={index}>
@@ -55,9 +54,6 @@ const NavBar = () => {
                     </div>
                 ))}
             </div>
-
-
-
         </nav>
     );
 };

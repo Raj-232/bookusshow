@@ -5,6 +5,7 @@ import { useGetRecommendedEventsQuery, useGetUpcomingEventsQuery } from "@/store
 import { IconArrowRight } from "@/lib/Icons";
 import { UpcomingCard } from "./UpcomingCard";
 import Loading from "../loading";
+import Link from "next/link";
 
 type EventType = {
     eventName: string;
@@ -21,6 +22,23 @@ export default function Home() {
     const [upData, setUpData] = useState<EventType[]>([]);
     const { data, isFetching } = useGetRecommendedEventsQuery();
     const { data: eventData, refetch, isFetching: fetching } = useGetUpcomingEventsQuery(page);
+    const [scrollLeft, setScrollLeft] = useState(0);
+    const divRef = useRef<HTMLDivElement>(null);
+    const handleScroll = () => {
+        if (divRef.current) {
+          const scrollLeft = divRef.current.scrollLeft;
+          setScrollLeft(scrollLeft);
+        }
+      };
+      const scrollRightHandler = () => {
+        if (divRef.current) {
+          divRef.current.scrollBy({
+            left: 100, // You can adjust the scrolling distance as needed
+            behavior: 'smooth' // Optionally, you can make the scrolling smooth
+          });
+          setScrollLeft(divRef.current.scrollLeft);
+        }
+      };
     useEffect(() => {
         const handleScroll = () => {
             const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
@@ -62,11 +80,11 @@ export default function Home() {
                 </div>
             </div>
             <div className="relative bottom-32 text-white space-y-4">
-                <div className="flex justify-between p-4">
-                    <div className="flex space-x-2 text-xl font-bold"><div>Recommended Shows</div> <IconArrowRight /></div>
+                <div className="flex lg:pl-44 justify-between p-4">
+                    <a className="flex space-x-2 text-xl font-bold cursor-pointer"  onClick={scrollRightHandler}><div>Recommended Shows</div> <IconArrowRight /></a>
                     <div className="underline">sell all</div>
                 </div>
-                <div className="flex lg:pl-44 overflow-x-scroll  custom-scrollbar">
+                <div ref={divRef}  onScroll={handleScroll} className="flex lg:pl-44 overflow-x-scroll  custom-scrollbar ">
                     {recData?.map((item, index) => (
                         <div key={index} className="flex">
                             <ShowReccommended eventName={item.eventName} cityName={item.cityName} date={item.date} weather={item.weather} distanceKm={item.distanceKm} imgUrl={item.imgUrl} />
